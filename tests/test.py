@@ -1,4 +1,4 @@
-import translatium
+import translatium as translatium
 
 translatium.init_translatium('locales/', 'en_US')
 translatium.set_language('de_DE')
