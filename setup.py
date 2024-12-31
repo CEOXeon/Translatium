@@ -21,7 +21,7 @@ setuptools.setup(
     },
     author="Louis Zimmermann (@CEOXeon)",
     author_email="louis-github@tutanota.com",
-    license="", # FIXME: Add license
+    license="Apache-2.0",
     classifiers=[
         "Development Status :: 1 - Planning",
         "Intended Audience :: Developers",
