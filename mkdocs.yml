@@ -1,0 +1,6 @@
+site_name: Translatium Documentation
+nav:
+  - Home: index.md
+  - Installation: install.md
+  - Endpoints: endpoints.md
+theme: readthedocs
