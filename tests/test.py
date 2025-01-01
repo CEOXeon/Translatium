@@ -8,6 +8,14 @@ from translatium import translatium
 
 # Use an absolute path for the locales directory
 locales_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'locales'))
+
+
+
+
+############################################################
+#                      # ACTUAL TESTS                      #
+############################################################
+
 translatium.init_translatium(locales_path, 'en_US')
 translatium.set_language('de_DE')
 
