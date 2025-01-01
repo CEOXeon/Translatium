@@ -25,17 +25,22 @@ def init_translatium(path, fallback):
 def checks():
     global _translations, _fallback_language
     # Check if fallback language is available
-    if _fallback_language not in _translations:
-        raise TranslationError("Fallback Language not found", _fallback_language)
+    def check_fallback_language():
+        if _fallback_language not in _translations:
+            raise TranslationError("Fallback Language not found", _fallback_language)
     # Check if all keys in the languages (except the fallback language) are present in the fallback language
-    fallback_keys = set(_translations[_fallback_language].keys())
-    for lang, translations in _translations.items():
-        if lang == _fallback_language:
-            continue
-        language_keys = set(translations.keys())
-        for key in language_keys:
-            if key not in fallback_keys:
-                raise TranslationError(f"Translation key '{key}' in language '{lang}' not found in fallback language", key)
+    def check_translation_keys():
+        fallback_keys = set(_translations[_fallback_language].keys())
+        for lang, translations in _translations.items():
+            if lang == _fallback_language:
+                continue
+            missing_keys = set(translations.keys()) - fallback_keys
+            if missing_keys:
+                raise TranslationError(
+                    f"Translation keys {missing_keys} in language '{lang}' not found in fallback language",
+                    missing_keys)
+    check_fallback_language()
+    check_translation_keys()
 
 def set_language(language):
     global _language
@@ -43,12 +48,15 @@ def set_language(language):
 
 def translation(translation_key):
     global _translations, _language, _fallback_language
-    if _translations[_language].get(translation_key):
-        return _translations[_language].get(translation_key)
-    elif _translations[_fallback_language].get(translation_key):
-        return _translations[_fallback_language].get(translation_key)
+    # Helper function to get translation from a specific language
+    def get_translation(language):
+        return _translations.get(language, {}).get(translation_key)
+    translation = get_translation(_language) or get_translation(_fallback_language)
+    if translation:
+        return translation
     else:
-        raise TranslationError(f"Translation key not found in selected Language({_language}). Also not found in fallback Language({_fallback_language})", translation_key)
+        raise TranslationError(
+            f"Translation key '{translation_key}' not found in selected language '{_language}' or fallback language '{_fallback_language}'", translation_key)
 
 def load_translations(path):
     translations = {}
