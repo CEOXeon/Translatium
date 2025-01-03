@@ -7,7 +7,7 @@ on:
 
 jobs:
   pypi-publish:
-    if: github.event.release.prerelease == false  # Check if the release is not a pre-release
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'release' && github.event.release.prerelease == false)
     name: Publish release to PyPI
     runs-on: ubuntu-latest
     environment:
