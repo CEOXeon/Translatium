@@ -3,4 +3,5 @@ nav:
   - Home: index.md
   - Installation: install.md
   - Endpoints: endpoints.md
+  - Development: developer.md
 theme: readthedocs
