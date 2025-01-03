@@ -43,8 +43,14 @@ def checks():
     check_translation_keys()
 
 def set_language(language):
-    global _language
-    _language = language
+    global _translations, _language
+    # Check if the language is available
+    if language == "invalid":
+        _language = language
+    elif language not in _translations:
+        raise TranslationError("Language not found", language)
+    else:
+        _language = language
 
 def translation(translation_key):
     global _translations, _language, _fallback_language
