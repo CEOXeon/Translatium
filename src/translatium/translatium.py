@@ -16,13 +16,28 @@ _translations = {}
 _fallback_language = None
 _language = None
 
-def init_translatium(path, fallback):
+def init_translatium(path, fallback: str) -> None:
+    '''
+    Initialize translatium. It does automatically load the translations and checks for errors.
+
+    Parameters:
+    - path: Path to the directory containing the translation files
+    - fallback: The fallback language to use when a translation is not found in the selected language
+
+    Returns: None
+    '''
     global _translations, _fallback_language, _language
     _translations = load_translations(path)
     _fallback_language = fallback
     checks()
+    return None
 
-def checks():
+def checks() -> None:
+    '''
+    Check if the translations are valid and if the fallback language is available.
+
+    Returns: None
+    '''
     global _translations, _fallback_language
     # Check if fallback language is available
     def check_fallback_language():
@@ -41,8 +56,19 @@ def checks():
                     missing_keys)
     check_fallback_language()
     check_translation_keys()
+    return None
 
-def set_language(language):
+def set_language(language: str) -> None:
+    '''
+    Sets the preferred language for translations.
+    If the language is not available, an error is raised.
+    If the language is set to "invalid", the laguage is changed to the string invalid. This doen for testing purposes.
+
+    Parameters:
+    - language: The language code to set as the preferred language
+
+    Returns: None
+    '''
     global _translations, _language
     # Check if the language is available
     if language == "invalid":
@@ -51,8 +77,18 @@ def set_language(language):
         raise TranslationError("Language not found", language)
     else:
         _language = language
+    return None
 
-def translation(translation_key):
+def translation(translation_key: str) -> str:
+    '''
+    Gets the translation for a specific key in the selected language.
+    If the translation is not found in the selected language, the fallback language is used.
+
+    Parameters:
+    - translation_key: The key for the translation
+
+    Returns: A string with the translation
+    '''
     global _translations, _language, _fallback_language
     # Helper function to get translation from a specific language
     def get_translation(language):
@@ -64,7 +100,15 @@ def translation(translation_key):
         raise TranslationError(
             f"Translation key '{translation_key}' not found in selected language '{_language}' or fallback language '{_fallback_language}'", translation_key)
 
-def load_translations(path):
+def load_translations(path) -> dict:
+    '''
+    Loads translations from the specified directory.
+
+    Parameters:
+    - path: Path to the directory containing the translation files
+
+    Returns: A dictionary with the translations
+    '''
     translations = {}
     for filename in os.listdir(path):
         if filename.endswith('.yaml') or filename.endswith('.yml'):
