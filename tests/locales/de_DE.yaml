@@ -1,2 +1,2 @@
-hello_message: "Hallo Welt!"
+hello_message: "Hallo Welt! {name}"
 bye_message: "Tschüss Welt!"

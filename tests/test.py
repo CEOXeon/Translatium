@@ -39,8 +39,8 @@ def test_translations():
     translatium.set_language('de_DE')
     
     # Test German translation
-    assert translatium.translation('hello_message') == 'Hallo Welt!'
+    assert translatium.translation('hello_message', name="Louis") == 'Hallo Welt! Louis'
     
     # Test fallback to English
     translatium.set_language('invalid')
-    assert translatium.translation('hello_message') == 'Hello World! %{name}'
+    assert translatium.translation('hello_message', name="Louis") == 'Hello World! Louis'

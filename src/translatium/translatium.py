@@ -79,7 +79,7 @@ def set_language(language: str) -> None:
         _language = language
     return None
 
-def translation(translation_key: str) -> str:
+def translation(translation_key: str, **kwargs) -> str:
     '''
     Gets the translation for a specific key in the selected language.
     If the translation is not found in the selected language, the fallback language is used.
@@ -95,7 +95,7 @@ def translation(translation_key: str) -> str:
         return _translations.get(language, {}).get(translation_key)
     translation = get_translation(_language) or get_translation(_fallback_language)
     if translation:
-        return translation
+        return translation.format(**kwargs)
     else:
         raise TranslationError(
             f"Translation key '{translation_key}' not found in selected language '{_language}' or fallback language '{_fallback_language}'", translation_key)
