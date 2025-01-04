@@ -1,5 +1,5 @@
 import yaml
-import os
+from pathlib import Path
 
 
 class TranslationError(Exception):
@@ -16,7 +16,7 @@ _translations = {}
 _fallback_language = None
 _language = None
 
-def init_translatium(path, fallback: str) -> None:
+def init_translatium(path: Path, fallback: str) -> None:
     '''
     Initialize translatium. It does automatically load the translations and checks for errors.
 
@@ -100,7 +100,7 @@ def translation(translation_key: str) -> str:
         raise TranslationError(
             f"Translation key '{translation_key}' not found in selected language '{_language}' or fallback language '{_fallback_language}'", translation_key)
 
-def load_translations(path) -> dict:
+def load_translations(path: Path) -> dict:
     '''
     Loads translations from the specified directory.
 
@@ -110,9 +110,12 @@ def load_translations(path) -> dict:
     Returns: A dictionary with the translations
     '''
     translations = {}
-    for filename in os.listdir(path):
-        if filename.endswith('.yaml') or filename.endswith('.yml'):
-            lang_code = filename.split('.')[0]  # Extract the language code from the filename
-            with open(os.path.join(path, filename), 'r') as file:
-                translations[lang_code] = yaml.safe_load(file)
+    for file in path.glob('*.yaml'):
+        lang_code = file.stem  # Extract the language code from the filename
+        with file.open('r') as f:
+            translations[lang_code] = yaml.safe_load(f)
+    for file in path.glob('*.yml'):
+        lang_code = file.stem  # Extract the language code from the filename
+        with file.open('r') as f:
+            translations[lang_code] = yaml.safe_load(f)
     return translations

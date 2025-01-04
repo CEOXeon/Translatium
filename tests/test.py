@@ -1,14 +1,13 @@
 import sys
-import os
 import pytest
+from pathlib import Path
 
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'src'))
 
 from translatium import translatium
 
 # Get absolute path to locales directory
-LOCALES_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), 'locales'))
+LOCALES_PATH = Path(__file__).resolve().parent / 'locales'
 
 
 
