@@ -33,27 +33,27 @@ def test_init():
 @pytest.mark.dependency(depends=["test_init"])
 def test_set_language():
     """Test setting the active language"""
-    translatium.set_language('de_DE')
-    assert translatium._language == 'de_DE'
+    translatium.set_config('language', 'de_DE')
+    assert translatium._config["language"] == 'de_DE'
 
 @pytest.mark.dependency(depends=["test_set_language"])
 def test_translations():
     """Test that translations work correctly"""
     # Initialize first
     translatium.init_translatium(LOCALES_PATH, 'en_US')
-    translatium.set_language('de_DE')
+    translatium.set_config('language', 'de_DE')
     
     # Test German translation
     assert translatium.translation('hello_message', name="Louis") == 'Hallo Welt! Louis'
     
     # Test fallback to English
-    translatium.set_language('invalid')
+    translatium.set_config("language", 'invalid')
     assert translatium.translation('hello_message', name="Louis") == 'Hello World! Louis'
 
 @pytest.mark.dependency(depends=["test_translations"])
 def test_more_depth_in_translations(monkeypatch):
     translatium.init_translatium(LOCALES_PATH, 'en_US')
-    translatium.set_language('de_DE')
+    translatium.set_config('language', 'de_DE')
     data= {
         "en_US": {
             "mail": {
@@ -71,3 +71,6 @@ def test_more_depth_in_translations(monkeypatch):
     change_translations_module_scope(monkeypatch, data)
     assert translatium.translation('mail.one') == 'Sie haben eine neue E-Mail'
     assert translatium.translation('mail.many') == 'Sie haben viele neue E-Mails'
+    translatium.set_config("language", 'invalid')
+    assert translatium.translation('mail.one') == 'You have one new mail'
+    assert translatium.translation('mail.many') == 'You have many new mails'
