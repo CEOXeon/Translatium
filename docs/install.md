@@ -8,5 +8,5 @@ pip install translatium
 
 ### Internal dependencies
 
-- os
+- pathlib
 - pyyaml

@@ -1,6 +1,6 @@
 # Library Endpoints
 
-## translatium.init_translatium(path: str, fallback_language: str) -> None
+## translatium.init_translatium(path: Path, fallback_language: str) -> None
 
 This function initializes the library with the path to the directory containing the language files and the fallback language.
 The language files should be in the format `language_code.yaml`. The fallback language is used when the requested translation key is not available in the preferred language.
