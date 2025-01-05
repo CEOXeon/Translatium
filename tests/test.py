@@ -11,6 +11,11 @@ LOCALES_PATH = Path(__file__).resolve().parent / 'locales'
 
 
 
+def change_translations_module_scope(monkeypatch, data: dict):
+    monkeypatch.setattr(translatium, '_translations', data)
+
+
+
 ############################################################
 #                      # ACTUAL TESTS                      #
 ############################################################
@@ -44,3 +49,25 @@ def test_translations():
     # Test fallback to English
     translatium.set_language('invalid')
     assert translatium.translation('hello_message', name="Louis") == 'Hello World! Louis'
+
+@pytest.mark.dependency(depends=["test_translations"])
+def test_more_depth_in_translations(monkeypatch):
+    translatium.init_translatium(LOCALES_PATH, 'en_US')
+    translatium.set_language('de_DE')
+    data= {
+        "en_US": {
+            "mail": {
+                "one": "You have one new mail",
+                "many": "You have many new mails"
+            }
+        },
+        "de_DE": {
+            "mail": {
+                "one": "Sie haben eine neue E-Mail",
+                "many": "Sie haben viele neue E-Mails"
+            }
+        }
+    }
+    change_translations_module_scope(monkeypatch, data)
+    assert translatium.translation('mail.one') == 'Sie haben eine neue E-Mail'
+    assert translatium.translation('mail.many') == 'Sie haben viele neue E-Mails'

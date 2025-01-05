@@ -91,9 +91,16 @@ def translation(translation_key: str, **kwargs) -> str:
     '''
     global _translations, _language, _fallback_language
     # Helper function to get translation from a specific language
-    def get_translation(language):
-        return _translations.get(language, {}).get(translation_key)
-    translation = get_translation(_language) or get_translation(_fallback_language)
+    def get_translation(language, keys):
+        translation = _translations.get(language, {})
+        for key in keys:
+            if isinstance(translation, dict):
+                translation = translation.get(key)
+            else:
+                return None
+        return translation
+    keys = translation_key.split('.')
+    translation = get_translation(_language, keys) or get_translation(_fallback_language, keys)
     if translation:
         return translation.format(**kwargs)
     else:
