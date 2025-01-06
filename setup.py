@@ -2,7 +2,7 @@ from pathlib import Path
 
 import setuptools
 
-VERSION = "0.0.1"  # PEP-440
+VERSION = "0.0.2"  # PEP-440
 NAME = "translatium"
 DESCRIPTION = "A pure Python i18n library for your Python projects."
 URL="https://github.com/CEOXeon/Translatium"
@@ -13,7 +13,7 @@ AUTHOR = "Louis Zimmermann (@CEOXeon)"
 AUTHOR_EMAIL = "louis-github@tutanota.com"
 LICENSE = "Apache-2.0"
 CLASSIFIERS = [
-    "Development Status :: 1 - Planning",
+    "Development Status :: 2 - Pre-Alpha",
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
