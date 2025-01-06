@@ -1,7 +1,12 @@
 site_name: Translatium Documentation
 nav:
   - Home: index.md
-  - Installation: install.md
-  - Endpoints: endpoints.md
-  - Development: developer.md
-theme: readthedocs
+  - Installation: usage/install.md
+  - Endpoints: usage/endpoints.md
+  - Development: developer/developer.md
+theme:
+  name: readthedocs
+  highlightjs: true
+  hljs_languages:
+      - yaml
+      - python

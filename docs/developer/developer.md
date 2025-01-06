@@ -28,7 +28,7 @@ To host the documentation on localhost for testing, you need to install the deve
 pip install mkdocs
 ```
 
-Then, you have run the following command:
+Then, you have to run the following command:
 
 ```bash
 mkdocs serve

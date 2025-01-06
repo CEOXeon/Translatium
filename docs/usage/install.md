@@ -1,4 +1,4 @@
-# Installiontion
+# Installation
 
 ## Simple installation
 
