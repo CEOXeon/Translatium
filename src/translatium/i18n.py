@@ -1,39 +1,8 @@
 import yaml
 from pathlib import Path
-import warnings
-import functools
-
-
-def deprecated(message, version):
-    def decorator(func):
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            warnings.warn(
-                f"{func.__name__} is deprecated and will be removed in {version}. {message}",
-                DeprecationWarning,
-                stacklevel=2
-            )
-            return func(*args, **kwargs)
-        return wrapper
-    return decorator
-
-
-class TranslationError(Exception):
-    def __init__(self, message, value=""):
-        self.message = message
-        self.value = value
-        super().__init__(self.message)
-    def __str__(self):
-        return f'{self.message} -> {self.value}'
-
-
-# Global variables to store translations and fallback language
-_translations = {}
-_config = {
-    "silent_kwargs": False,
-    "language": "",
-    "fallback_language": "",
-}
+from .errors import TranslationError
+from .config import set_translations, get_translations, set_config, get_config
+from .utils import deprecated
 
 def init_translatium(path: Path, fallback: str) -> None:
     '''
@@ -45,9 +14,8 @@ def init_translatium(path: Path, fallback: str) -> None:
 
     Returns: None
     '''
-    global _translations, _config
-    _translations = load_translations(path)
-    _config["fallback_language"] = fallback
+    set_translations(load_translations(path))
+    set_config("fallback_language", fallback)
     checks()
     return None
 
@@ -57,22 +25,19 @@ def checks() -> None:
 
     Returns: None
     '''
-    global _translations, _config
     # Check if fallback language is available
     def check_fallback_language():
-        if _config["fallback_language"] not in _translations:
-            raise TranslationError("Fallback Language not found", _config["fallback_language"])
+        if get_config()["fallback_language"] not in get_translations():
+            raise TranslationError("Fallback Language not found", get_config()["fallback_language"])
     # Check if all keys in the languages (except the fallback language) are present in the fallback language
     def check_translation_keys():
-        fallback_keys = set(_translations[_config["fallback_language"]].keys())
-        for lang, translations in _translations.items():
-            if lang == _config["fallback_language"]:
+        fallback_keys = set(get_translations()[get_config()["fallback_language"]].keys())
+        for lang, translations in get_translations().items():
+            if lang == get_config()["fallback_language"]:
                 continue
             missing_keys = set(translations.keys()) - fallback_keys
             if missing_keys:
-                raise TranslationError(
-                    f"Translation keys {missing_keys} in language '{lang}' not found in fallback language",
-                    missing_keys)
+                raise TranslationError(f"Translation keys {missing_keys} in language '{lang}' not found in fallback language", missing_keys)
     check_fallback_language()
     check_translation_keys()
     return None
@@ -89,14 +54,13 @@ def set_language(language: str) -> None:
 
     Returns: None
     '''
-    global _translations, _config
     # Check if the language is available
     if language == "invalid":
-        _config["language"] = language
-    elif language not in _translations:
+        set_config("language", language)
+    elif language not in get_translations():
         raise TranslationError("Language not found", language)
     else:
-        _config["language"] = language
+        set_config("language", language)
     return None
 
 def translation(translation_key: str, **kwargs) -> str:
@@ -109,10 +73,9 @@ def translation(translation_key: str, **kwargs) -> str:
 
     Returns: A string with the translation
     '''
-    global _translations, _config
     # Helper function to get translation from a specific language
     def get_translation(language, keys):
-        translation = _translations.get(language, {})
+        translation = get_translations().get(language, {})
         for key in keys:
             if isinstance(translation, dict):
                 translation = translation.get(key)
@@ -120,12 +83,12 @@ def translation(translation_key: str, **kwargs) -> str:
                 return None
         return translation
     keys = translation_key.split('.')
-    translation = get_translation(_config["language"], keys) or get_translation(_config["fallback_language"], keys)
+    translation = get_translation(get_config()["language"], keys) or get_translation(get_config()["fallback_language"], keys)
     if translation:
         return translation.format(**kwargs)
     else:
         raise TranslationError(
-            f"Translation key '{translation_key}' not found in selected language '{_config["language"]}' or fallback language '{_config["fallback_language"]}'", translation_key)
+            f"Translation key '{translation_key}' not found in selected language '{get_config()["language"]}' or fallback language '{get_config()["fallback_language"]}'", translation_key)
 
 def load_translations(path: Path) -> dict:
     '''
@@ -146,26 +109,3 @@ def load_translations(path: Path) -> dict:
         with file.open('r') as f:
             translations[lang_code] = yaml.safe_load(f)
     return translations
-
-def set_config(config_key: str, value: str) -> None:
-    '''
-    Gives write access to the configuration of translatium.
-
-    Parameters:
-    - config_key: The key of the configuration to change
-    - value: The value to set
-
-    Returns: None
-    '''
-    global _config
-    _config[config_key] = value
-    return None
-
-def get_config() -> dict:
-    '''
-    Gives read access to the configuration of translatium.
-
-    Returns: A dictionary with the configuration
-    '''
-    global _config
-    return _config

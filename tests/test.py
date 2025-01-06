@@ -4,7 +4,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'src'))
 
-from translatium import translatium
+import translatium
 
 # Get absolute path to locales directory
 LOCALES_PATH = Path(__file__).resolve().parent / 'locales'
@@ -12,7 +12,7 @@ LOCALES_PATH = Path(__file__).resolve().parent / 'locales'
 
 
 def change_translations_module_scope(monkeypatch, data: dict):
-    monkeypatch.setattr(translatium, '_translations', data)
+    monkeypatch.setattr(translatium.config, '_translations', data)
 
 
 
@@ -34,7 +34,7 @@ def test_init():
 def test_set_language():
     """Test setting the active language"""
     translatium.set_config('language', 'de_DE')
-    assert translatium._config["language"] == 'de_DE'
+    assert translatium.get_config()["language"] == 'de_DE'
 
 @pytest.mark.dependency(depends=["test_set_language"])
 def test_translations():
