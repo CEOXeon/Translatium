@@ -1,4 +1,5 @@
 import yaml
+import json
 from pathlib import Path
 from .errors import TranslationError
 from .config import set_translations, get_translations, set_config, get_config
@@ -100,6 +101,7 @@ def load_translations(path: Path) -> dict:
     Returns: A dictionary with the translations
     '''
     translations = {}
+    ## YAML Support
     for file in path.glob('*.yaml'):
         lang_code = file.stem  # Extract the language code from the filename
         with file.open('r') as f:
@@ -108,4 +110,9 @@ def load_translations(path: Path) -> dict:
         lang_code = file.stem  # Extract the language code from the filename
         with file.open('r') as f:
             translations[lang_code] = yaml.safe_load(f)
+    ## JSON Support
+    for file in path.glob('*.json'):
+        lang_code = file.stem  # Extract the language code from the filename
+        with file.open('r') as f:
+            translations[lang_code] = json.load(f)
     return translations
