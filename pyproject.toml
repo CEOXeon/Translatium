@@ -1,3 +1,28 @@
 [build-system]
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "translatium"
+version = "0.0.2"
+authors = [
+    {name = "Louis Zimmermann", email = "louis-github@tutanota.com"},
+]
+description = "A pure Python i18n library for your Python projects."
+readme = "README.md"
+#requires-python = ">=3.8"
+keywords = ["i18n", "l10n", "translation", "localization", "internationalization"]
+license = {file = "LICENSE"}
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "pyyaml",
+]
+
+[project.urls]
+"Source Code" = "https://github.com/CEOXeon/Translatium"
+Changelog = "https://github.com/CEOXeon/Translatium/blob/main/CHANGELOG.md"
