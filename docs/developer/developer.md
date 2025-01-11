@@ -1,5 +1,7 @@
 # Developer Guide
 
+[TOC]
+
 ## Testing
 
 To run the tests, you need to install the development dependencies. You can do this by running:
@@ -26,6 +28,10 @@ To host the documentation on localhost for testing, you need to install the deve
 
 ```bash
 pip install mkdocs
+```
+
+```bash
+pip install mkdocstrings-python
 ```
 
 Then, you have to run the following command:

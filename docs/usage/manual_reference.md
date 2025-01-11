@@ -1,5 +1,7 @@
 # Library Endpoints
 
+[TOC]
+
 ## Endpoints
 
 ### init_translatium(path: Path, fallback: str) -> None

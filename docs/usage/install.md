@@ -1,5 +1,7 @@
 # Installation
 
+[TOC]
+
 ## Simple installation
 
 ```bash
@@ -10,3 +12,4 @@ pip install translatium
 
 - pathlib
 - pyyaml
+- json
