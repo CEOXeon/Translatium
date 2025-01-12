@@ -82,7 +82,7 @@ def test_more_depth_in_translations(monkeypatch):
 ############################################################
 
 EASTER_EGGS_PATH = Path(__file__).resolve().parent.parent / "easter_eggs.hidden"
-if not EASTER_EGGS_PATH.exists():
+if EASTER_EGGS_PATH.exists():
     def test_stupid_easter_eggs():
         import antigravity
         antigravity.fly()
