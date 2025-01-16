@@ -1,10 +1,15 @@
-import yaml
 import json
 from pathlib import Path
-from .errors import TranslationError
-from .config import set_translations, get_translations, set_config, get_config
-from .utils import deprecated
 
+import yaml
+from typeguard import typechecked
+
+from .config import get_config, get_translations, set_config, set_translations
+from .errors import TranslationError
+from .utils import TranslationsType, deprecated
+
+
+@typechecked
 def init_translatium(path: Path, fallback: str) -> None:
     '''
     Initialize translatium. It does automatically load the translations and checks for errors.
@@ -20,6 +25,7 @@ def init_translatium(path: Path, fallback: str) -> None:
     checks()
     return None
 
+@typechecked
 def checks() -> None:
     '''
     Check if the translations are valid and if the fallback language is available.
@@ -44,6 +50,7 @@ def checks() -> None:
     return None
 
 @deprecated("Use set_config instead", "v0.3.0")
+@typechecked
 def set_language(language: str) -> None:
     '''
     Sets the preferred language for translations.
@@ -64,6 +71,7 @@ def set_language(language: str) -> None:
         set_config("language", language)
     return None
 
+@typechecked
 def translation(translation_key: str, **kwargs) -> str:
     '''
     Gets the translation for a specific key in the selected language.
@@ -91,7 +99,8 @@ def translation(translation_key: str, **kwargs) -> str:
         raise TranslationError(
             f"Translation key '{translation_key}' not found in selected language '{get_config()["language"]}' or fallback language '{get_config()["fallback_language"]}'", translation_key)
 
-def load_translations(path: Path) -> dict:
+@typechecked
+def load_translations(path: Path) -> TranslationsType:
     '''
     Loads translations from the specified directory.
 
@@ -100,7 +109,7 @@ def load_translations(path: Path) -> dict:
 
     Returns: A dictionary with the translations
     '''
-    translations = {}
+    translations: TranslationsType = {}
     ## YAML Support
     for file in path.glob('*.yaml'):
         lang_code = file.stem  # Extract the language code from the filename

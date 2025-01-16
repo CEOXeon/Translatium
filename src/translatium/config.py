@@ -1,15 +1,18 @@
+from typeguard import typechecked
 
+from .utils import ConfigType, TranslationsType
 
 # Global variables to store translations and fallback language
-_translations = {}
-_config = {
+_translations: TranslationsType = {}
+_config: ConfigType = {
     "silent_kwargs": False,
     "language": "",
     "fallback_language": "",
 }
 
 
-def set_config(config_key: str, value: str) -> None:
+@typechecked
+def set_config(config_key: str, value: str) -> None: # FIXME: Value should be Union[str, bool, int]
     '''
     Gives write access to the configuration of translatium.
 
@@ -23,7 +26,8 @@ def set_config(config_key: str, value: str) -> None:
     _config[config_key] = value
     return None
 
-def get_config() -> dict:
+@typechecked
+def get_config() -> ConfigType:
     '''
     Gives read access to the configuration of translatium.
 
@@ -32,7 +36,8 @@ def get_config() -> dict:
     global _config
     return _config
 
-def set_translations(translations: dict) -> None:
+@typechecked
+def set_translations(translations: TranslationsType) -> None:
     '''
     Sets the translations for translatium.
 
@@ -45,7 +50,8 @@ def set_translations(translations: dict) -> None:
     _translations = translations
     return None
 
-def get_translations() -> dict:
+@typechecked
+def get_translations() -> TranslationsType:
     '''
     Gets the translations for translatium.
 

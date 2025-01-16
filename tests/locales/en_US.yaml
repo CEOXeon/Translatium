@@ -1,2 +1,5 @@
 hello_message: "Hello World! {name}"
 bye_message: "Goodbye World!"
+mail:
+  one: "You have one new message."
+  other: "You have many new messages."
