@@ -13,7 +13,7 @@ LOCALES_PATH = Path(__file__).resolve().parent / 'locales'
 
 
 def change_translations_module_scope(monkeypatch, data: dict):
-    monkeypatch.setattr(translatium.config, '_translations', data)
+    monkeypatch.setattr(translatium.i18n.config, '_translations', data)
 
 
 

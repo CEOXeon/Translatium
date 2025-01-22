@@ -1,6 +1,6 @@
 from typeguard import typechecked
 
-from .utils import ConfigType, TranslationsType
+from ..helpers.utils import ConfigType, TranslationsType
 
 # Global variables to store translations and fallback language
 _translations: TranslationsType = {}

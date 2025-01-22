@@ -1,12 +1,11 @@
-import json
 from pathlib import Path
 
-import yaml
 from typeguard import typechecked
 
 from .config import get_config, get_translations, set_config, set_translations
-from .errors import TranslationError
-from .utils import TranslationsType, deprecated
+from ..helpers.errors import TranslationError
+from ..helpers.utils import deprecated
+from ..helpers.file_io import load_translations
 
 
 @typechecked
@@ -70,58 +69,3 @@ def set_language(language: str) -> None:
     else:
         set_config("language", language)
     return None
-
-@typechecked
-def translation(translation_key: str, **kwargs) -> str:
-    '''
-    Gets the translation for a specific key in the selected language.
-    If the translation is not found in the selected language, the fallback language is used.
-
-    Parameters:
-    - translation_key: The key for the translation
-
-    Returns: A string with the translation
-    '''
-    # Helper function to get translation from a specific language
-    def get_translation(language, keys):
-        translation = get_translations().get(language, {})
-        for key in keys:
-            if isinstance(translation, dict):
-                translation = translation.get(key)
-            else:
-                return None
-        return translation
-    keys = translation_key.split('.')
-    translation = get_translation(get_config()["language"], keys) or get_translation(get_config()["fallback_language"], keys)
-    if translation:
-        return translation.format(**kwargs)
-    else:
-        raise TranslationError(
-            f"Translation key '{translation_key}' not found in selected language '{get_config()["language"]}' or fallback language '{get_config()["fallback_language"]}'", translation_key)
-
-@typechecked
-def load_translations(path: Path) -> TranslationsType:
-    '''
-    Loads translations from the specified directory.
-
-    Parameters:
-    - path: Path to the directory containing the translation files
-
-    Returns: A dictionary with the translations
-    '''
-    translations: TranslationsType = {}
-    ## YAML Support
-    for file in path.glob('*.yaml'):
-        lang_code = file.stem  # Extract the language code from the filename
-        with file.open('r') as f:
-            translations[lang_code] = yaml.safe_load(f)
-    for file in path.glob('*.yml'):
-        lang_code = file.stem  # Extract the language code from the filename
-        with file.open('r') as f:
-            translations[lang_code] = yaml.safe_load(f)
-    ## JSON Support
-    for file in path.glob('*.json'):
-        lang_code = file.stem  # Extract the language code from the filename
-        with file.open('r') as f:
-            translations[lang_code] = json.load(f)
-    return translations
