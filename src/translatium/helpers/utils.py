@@ -3,7 +3,7 @@ import warnings
 from typing import TypeAlias, Union
 
 ############################################################
-#                 # DEPRECTATION DECORATOR                 #
+#                       # DECORATORS                      #
 ############################################################
 
 def deprecated(message, version):
@@ -19,6 +19,18 @@ def deprecated(message, version):
         return wrapper
     return decorator
 
+def convert_error_type(std_error, custom_error, **decorator_kwargs):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except std_error as e:
+                # Merge decorator_kwargs and kwargs, with kwargs taking precedence
+                error_kwargs = {**decorator_kwargs, **kwargs}
+                raise custom_error(e, **error_kwargs)
+        return wrapper
+    return decorator
 
 ############################################################
 #                      # TYPE ALIASES                      #
