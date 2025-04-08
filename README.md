@@ -42,6 +42,7 @@ For more information, check out the Documentation.
 
 ## Roadmap
 
+- [ ] Switching to an Object Oriented Programming approach
 - [ ] Add proper pluralization support
 - [ ] Numeral Converter
 - [ ] Date/Time Converter
