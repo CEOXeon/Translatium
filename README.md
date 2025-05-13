@@ -42,10 +42,12 @@ For more information, check out the Documentation.
 
 ## Roadmap
 
-- [ ] Switching to an Object Oriented Programming approach
+- [ ] Switching to an Object Oriented Programming approach (Next Release)
 - [ ] Add proper pluralization support
 - [ ] Numeral Converter
 - [ ] Date/Time Converter
+- [ ] Add Ruff linting
+- [ ] Add uv Python Environment
 - [ ] More to come...
 
 ## License
