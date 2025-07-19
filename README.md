@@ -20,17 +20,13 @@ pip install translatium
 
 ```python
 from pathlib import Path
-
-import translatium
+from translatium import Translator
 
 # Define a locale directory with pathlib.Path
 LOCALE_DIR = Path("locales")
 
 # Initialize the Library with the Locale Directory and the Fallback Locale
-translatium.init_translatium(LOCALES_DIR, 'en_US')
-
-# Set the preferred language config
-translatium.set_config('language', 'de_DE')
+translator = Translator(LOCALE_DIR, language="en", fallback_language="en")
 
 # Gives the translation for the key 'hello_message' in the preferred language if available, else in the fallback language
 translatium.translation('hello_message')
