@@ -7,7 +7,7 @@ nav:
   - Installation: 
     - Installation: usage/install.md
   - Endpoints: 
-    - Manual Refrence: usage/manual_reference.md
+    - Examples: usage/examples.md
     - Automatic Generated Reference: usage/Automatic_Reference.md
   - Development: 
     -  Developer Guide: developer/developer.md

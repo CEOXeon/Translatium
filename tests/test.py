@@ -5,56 +5,48 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'src'))
 
-import translatium
+from translatium import Translator
 
 # Get absolute path to locales directory
 LOCALES_PATH = Path(__file__).resolve().parent / 'locales'
 
 
-
-def change_translations_module_scope(monkeypatch, data: dict):
-    monkeypatch.setattr(translatium.i18n.config, '_translations', data)
-
+def change_translations_module_scope(monkeypatch, translator, data: dict):
+    monkeypatch.setattr(translator, 'translations', data) # type: ignore
 
 
-############################################################
-#                      # ACTUAL TESTS                      #
-############################################################
-
-@pytest.mark.dependency()
 def test_import():
     """Test that the module can be imported"""
-    assert translatium is not None
+    assert Translator is not None
 
-@pytest.mark.dependency(depends=["test_import"])
 def test_init():
     """Test initializing with locales path and fallback language"""
-    translatium.init_translatium(LOCALES_PATH, 'en_US')
-    
-@pytest.mark.dependency(depends=["test_init"])
+    translator = Translator(LOCALES_PATH, 'de_DE', "en_US")
+    assert translator is not None
+
 def test_set_language():
     """Test setting the active language"""
-    translatium.set_config('language', 'de_DE')
-    assert translatium.get_config()["language"] == 'de_DE'
+    translator = Translator(LOCALES_PATH, 'de_DE', "en_US")
+    translator.set_language('de_DE')
+    assert translator.get_language() == 'de_DE'
 
-@pytest.mark.dependency(depends=["test_set_language"])
-def test_translations():
-    """Test that translations work correctly"""
-    # Initialize first
-    translatium.init_translatium(LOCALES_PATH, 'en_US')
-    translatium.set_config('language', 'de_DE')
-    
-    # Test German translation
-    assert translatium.translation('hello_message', name="Louis") == 'Hallo Welt! Louis'
-    
-    # Test fallback to English
-    translatium.set_config("language", 'invalid')
-    assert translatium.translation('hello_message', name="Louis") == 'Hello World! Louis'
+def test_simple_translation(monkeypatch):
+    """Test that simple translations work correctly"""
+    translator = Translator(LOCALES_PATH, 'de_DE', "en_US")
+    data= {
+        "en_US": {
+            "hello_message": "Hello World! {name}"
+        },
+        "de_DE": {
+            "hello_message": "Hallo Welt! {name}"
+        }
+    }
+    change_translations_module_scope(monkeypatch, translator, data)
+    assert translator.translate('hello_message', name="Louis") == 'Hallo Welt! Louis'
 
-@pytest.mark.dependency(depends=["test_translations"])
-def test_more_depth_in_translations(monkeypatch):
-    translatium.init_translatium(LOCALES_PATH, 'en_US')
-    translatium.set_config('language', 'de_DE')
+def test_complex_translation(monkeypatch):
+    """Test that complex translations with nested keys work correctly"""
+    translator = Translator(LOCALES_PATH, 'de_DE', "en_US")
     data= {
         "en_US": {
             "mail": {
@@ -69,18 +61,13 @@ def test_more_depth_in_translations(monkeypatch):
             }
         }
     }
-    change_translations_module_scope(monkeypatch, data)
-    assert translatium.translation('mail.one') == 'Sie haben eine neue E-Mail'
-    assert translatium.translation('mail.many') == 'Sie haben viele neue E-Mails'
-    translatium.set_config("language", 'invalid')
-    assert translatium.translation('mail.one') == 'You have one new mail'
-    assert translatium.translation('mail.many') == 'You have many new mails'
+    change_translations_module_scope(monkeypatch, translator, data)
+    assert translator.translate('mail.one') == 'Sie haben eine neue E-Mail'
+    assert translator.translate('mail.many') == 'Sie haben viele neue E-Mails'
 
-@pytest.mark.dependency(depends=["test_more_depth_in_translations"])
-def test_pluralize(monkeypatch):
-    translatium.init_translatium(LOCALES_PATH, 'en_US')
-    translatium.set_config('language', 'de_DE')
-    translatium.set_config('fallback_language', 'de_DE')
+def test_pluralize_translation(monkeypatch):
+    """Test that pluralization works correctly"""
+    translator = Translator(LOCALES_PATH, 'de_DE', "en_US")
     data= {
         "en_US": {
             "mail": {
@@ -99,27 +86,29 @@ def test_pluralize(monkeypatch):
             }
         }
     }
-    change_translations_module_scope(monkeypatch, data)
-    assert translatium.pluralize('mail', 1) == 'Sie haben eine neue E-Mail'
-    assert translatium.pluralize('mail', 2) == 'Sie haben viele neue E-Mails'
-    assert translatium.pluralize('mail', 3) == 'Sie haben viele neue E-Mails'
-    assert translatium.pluralize('mail', 0) == 'Sie haben keine E-Mails'
-    assert translatium.pluralize('mail', -1) == "Sie haben neue E-Mails"
-    translatium.set_config("language", 'en_US')
-    assert translatium.pluralize('mail', 1) == 'You have one new mail'
-    assert translatium.pluralize('mail', 2) == 'You have many new mails'
-    assert translatium.pluralize('mail', 3) == 'You have many new mails'
-    assert translatium.pluralize('mail', 0) == 'You have no new mails'
-    assert translatium.pluralize('mail', -1) == "You have new mails"
+    change_translations_module_scope(monkeypatch, translator, data)
+    assert translator.pluralize('mail', 1) == 'Sie haben eine neue E-Mail'
+    assert translator.pluralize('mail', 2) == 'Sie haben viele neue E-Mails'
+    assert translator.pluralize('mail', 3) == 'Sie haben viele neue E-Mails'
+    assert translator.pluralize('mail', 0) == 'Sie haben keine E-Mails'
+    assert translator.pluralize('mail', -1) == "Sie haben neue E-Mails"
+    translator.set_language('en_US')
+    assert translator.pluralize('mail', 1) == 'You have one new mail'
+    assert translator.pluralize('mail', 2) == 'You have many new mails'
+    assert translator.pluralize('mail', 3) == 'You have many new mails'
+    assert translator.pluralize('mail', 0) == 'You have no new mails'
+    assert translator.pluralize('mail', -1) == "You have new mails"
 
-
-
-############################################################
-#                 # DO NOT DELETE THIS TEST                #
-############################################################
-
-EASTER_EGGS_PATH = Path(__file__).resolve().parent.parent / "easter_eggs.hidden"
-if EASTER_EGGS_PATH.exists():
-    def test_stupid_easter_eggs():
-        import antigravity
-        antigravity.fly()
+def test_fallback_translation(monkeypatch):
+    """Test that fallback translations work correctly"""
+    translator = Translator(LOCALES_PATH, 'de_DE', "en_US")
+    data= {
+        "en_US": {
+            "hello_message": "Hello World! {name}"
+        },
+        "de_DE": {
+            
+        }
+    }
+    change_translations_module_scope(monkeypatch, translator, data)
+    assert translator.translate('hello_message', name="Louis") == 'Hello World! Louis'
