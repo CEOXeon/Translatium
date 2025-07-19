@@ -2,7 +2,4 @@
 
 [TOC]
 
-::: src.translatium.i18n
-::: src.translatium.config
-::: src.translatium.utils
-::: src.translatium.errors
+::: src.translatium.i18n.core.Translator
