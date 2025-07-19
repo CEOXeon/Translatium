@@ -38,7 +38,7 @@ For more information, check out the Documentation.
 
 ## Roadmap
 
-- [ ] Switching to an Object Oriented Programming approach (Next Release)
+- [x] Switching to an Object Oriented Programming approach (Next Release)
 - [ ] Add proper pluralization support
 - [ ] Numeral Converter
 - [ ] Date/Time Converter
