@@ -42,7 +42,7 @@ For more information, check out the Documentation.
 - [ ] Add proper pluralization support
 - [ ] Numeral Converter
 - [ ] Date/Time Converter
-- [ ] Add Ruff linting
+- [x] Add Ruff linting
 - [ ] Add uv Python Environment
 - [ ] More to come...
 
