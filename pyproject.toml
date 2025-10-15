@@ -24,6 +24,16 @@ dependencies = [
     "typeguard",
 ]
 
+[dependency-groups]
+dev = [
+    "isort>=7.0.0",
+    "mkdocs>=1.6.1",
+    "mkdocstrings-python>=1.18.2",
+    "pytest>=8.4.2",
+    "pytest-cov>=7.0.0",
+    "ruff>=0.14.0",
+]
+
 [project.urls]
 "Source Code" = "https://github.com/CEOXeon/Translatium"
 Changelog = "https://github.com/CEOXeon/Translatium/blob/main/CHANGELOG.md"
