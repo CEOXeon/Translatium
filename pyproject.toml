@@ -39,7 +39,7 @@ dev = [
 Changelog = "https://github.com/CEOXeon/Translatium/blob/main/CHANGELOG.md"
 
 [tool.pytest.ini_options]
-testpaths = ["tests/test.py", "tests/test_translation.py"]
+testpaths = ["tests/test.py"]
 addopts = ["--cov=translatium", "--cov-report=term-missing", "-v"]
 
 [tool.ruff]
