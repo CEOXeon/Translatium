@@ -43,7 +43,7 @@ For more information, check out the Documentation.
 - [ ] Numeral Converter
 - [ ] Date/Time Converter
 - [x] Add Ruff linting
-- [ ] Add uv Python Environment
+- [x] Add uv Python Environment
 - [ ] More to come...
 
 ## License
